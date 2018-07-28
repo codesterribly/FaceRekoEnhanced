@@ -2,11 +2,18 @@
 <html>
     <head><title>FaceReko</title></head>
     <body>
+	{% with messages = get_flashed_messages() %}
+	{% if messages %}
 	<h1>Create Account</h1>
         <form method="POST">
-            Username: <input type="text" name="user" required="required" pattern="[A-Za-z0-9]{1,30}"><br/>
-            Password: <input type="password" name="pass" required="required" pattern="[A-Za-z0-9]{1,30}"><br/>
-            <input type="submit">
+        	Username: <input type="text" name="user" required="required" pattern="[A-Za-z0-9]{1,30}"><br/>
+        	Password: <input type="password" name="pass" required="required" pattern="[A-Za-z0-9]{1,30}"><br/>
+            	{% for message in messages %}
+		{{ message }}<br>
+		{% endfor %}
+		<input type="submit">
         </form>
+	{% endif %}
+	{% endwith %}
     </body>
 </html>
