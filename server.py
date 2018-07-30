@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, Response, session, redirect
+from flask import Flask, render_template, request, Response, session, flash, redirect
 from gpiozero import LED
 from signal import pause
 import datetime, os, signal
@@ -6,6 +6,7 @@ import gevent
 import gevent.monkey
 import subprocess as sp
 import mysql.connector
+import check_card 
 from gevent.pywsgi import WSGIServer
 
 images = os.path.join('static', 'images')
@@ -38,17 +39,19 @@ def logout():
 	session.clear()
 	return redirect('/')
 
+
 @app.route("/createacc", methods=['POST','GET'])
 def createAcc():
 	u, pw,h,db = 'root', 'dmitiot', 'localhost', 'FaceReko'
 	con = mysql.connector.connect(user=u,password=pw,host=h,database=db)
 	print("Database successfully connected")
 	cur = con.cursor()
+	flash('Place your RFID card on reader before proceeding!')
 	
 	
 	if request.method == 'POST':
-		sql = "INSERT into Login (Username, Password) VALUES (%s, %s)"
-		cur.execute(sql, (request.form['user'], request.form['pass']))
+		sql = "INSERT into Login (Username, Password, cardUID) VALUES (%s, %s, %s)"
+		cur.execute(sql, (request.form['user'], request.form['pass'], check_card.read()))
 		con.commit()
 		cur.close()
 		con.close()
@@ -70,7 +73,7 @@ def chart():
 	con = mysql.connector.connect(user=u,password=pw,host=h,database=db)
 	print("Database successfully connected")
 	cur = con.cursor()
-	query = "SELECT Time, Name, Similarity, Confidence, Image FROM AccessLog ORDER BY Time LIMIT 10"
+	query = "SELECT Time, Name, Similarity, Confidence, Image FROM AccessLog ORDER BY Time"
 	cur.execute(query)
 	for (Time, Name, Similarity, Confidence, Image) in cur:
 		d = []
