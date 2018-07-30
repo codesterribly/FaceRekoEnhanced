@@ -73,7 +73,7 @@ def chart():
 	con = mysql.connector.connect(user=u,password=pw,host=h,database=db)
 	print("Database successfully connected")
 	cur = con.cursor()
-	query = "SELECT Time, Name, Similarity, Confidence, Image FROM AccessLog ORDER BY Time LIMIT 10"
+	query = "SELECT Time, Name, Similarity, Confidence, Image FROM AccessLog ORDER BY Time"
 	cur.execute(query)
 	for (Time, Name, Similarity, Confidence, Image) in cur:
 		d = []
