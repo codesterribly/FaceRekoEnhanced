@@ -2,11 +2,9 @@ import RPi.GPIO as GPIO
 import MFRC522
 import signal, time
 import FaceReko
+import mysql.connector
 from gpiozero import LED, Buzzer
 
-uid = None
-hid = [136, 4, 30, 198, 84]
-prev_uid = None 
 continue_reading = True
 allow = False
 
@@ -54,28 +52,42 @@ print "NFC Reader Active"
 print "Press Ctrl-C to stop."
 
 # This loop keeps checking for cards.
-# Only the hardcoded reconsied card will trigger the code.
 
 while continue_reading:
 	
     #Scan for cards    
 	(status,TagType) = mfrc522.MFRC522_Request(mfrc522.PICC_REQIDL)
-
+	
     #If a card is found
 	if status == mfrc522.MI_OK:
+		
 		#Get the UID of the card
-		(status,uid) = mfrc522.MFRC522_Anticoll()
-		if uid==hid:
-			prev_uid = uid
-			buzz1sec()
-			print("Card {} detected, Facial reko activated".format(uid))
-			allow = FaceReko.main()
-			if allow==True:
-				allowAccess()
-			else:
-				buzz1sec()
-				buzz1sec()
-				buzz1sec()
+		(status,id) = mfrc522.MFRC522_Anticoll()
+		uid = ''.join(str(i) for i in id )
+		
+		u, pw,h,db = 'root', 'dmitiot', 'localhost', 'FaceReko'
+		con = mysql.connector.connect(user=u,password=pw,host=h,database=db)
+		cur = con.cursor()
+		print("Database successfully connected")
+		query = "SELECT cardUID FROM Login"
+		cur.execute(query)
+		for cardUID in cur:
+			print(cardUID[0])
+			if uid==cardUID[0]:
 				
-	#Prevents continuous card scan spam. Waits 2 seconds before next scan
-	time.sleep(2)
+				buzz1sec()
+				print("Card {} detected, Facial reko activated".format(uid))
+				allow = FaceReko.main()
+				
+				if allow==True:
+					allowAccess()
+					
+				else:
+					print("Card {} not reconised".format(uid))
+					buzz1sec()
+					buzz1sec()
+					buzz1sec()
+				break
+				
+	#Prevents continuous card scan spam. Waits 1 seconds before next scan
+	time.sleep(1)
