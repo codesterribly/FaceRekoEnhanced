@@ -96,8 +96,6 @@ In the root FaceReko folder run `aws iam create-role --role-name FaceReko --assu
 ### Edit variables
 In *FaceReko.py* and *server.py* change MySQL connection info if needed.
 
-Run `python check_card.py` and tap your card on the reader to find out your card's UID. Edit *rfid.py*, look for the hid variable and change the numbers to your card's UID.
-
 Lastly for this section, edit *FaceReko.py* and look for the `collection` variable. Change this to whatever you named your collection earlier.
 
 ## Usage:
