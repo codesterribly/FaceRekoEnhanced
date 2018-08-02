@@ -1,4 +1,6 @@
 # FaceRekoEnhanced
+ <nowiki>*</nowiki>This project is an improved version forked from the original [FaceReko Project](https://github.com/yxkillz/FaceReko)
+
 School IoT project. Simple Raspberry Pi face recognition security system for a door.
 This project leverages Amazon's Rekognition service, AWS SNS service and was created for a Raspberry Pi with default account pi (adjust *install.sh* if different), a local mysql database and runs a simple WebApp.
 
@@ -36,7 +38,7 @@ If the person was succesfully recognised, an email with the details of that logi
   2) Go to the details page of the newly registered thing and go to the "Interact" tab. Copy/ note down the Rest API Endpoint address.
   3) Next, go to the security tab of your thing and select "create certificate". Download all 4 generated certificates and rename them to remove the string of alpha numeric characters at the start of each file name. The final file names should be "certificate.pem.crt", "private.pem.key", "public.pem.key" and "rootca.pem". Place those files in the root FaceReko folder
   4) Click the activate button to activate the certificates.
-  5) In the top right corner click "Attach a policy" then "Create new policy". Enter any name you want, enter "*" for Resource ARN* and check Allow under effect. Then complete the policy windows.
+  5) In the top right corner click "Attach a policy" then "Create new policy". Enter any name you want, enter " <nowiki>*</nowiki>" for Resource ARN and check Allow under effect. Then complete the policy windows.
   6) In the main AWS IoT core nav bar select "Security Certificates" tab. Select the checkbox of the certificate you made earlier and select "attach policy" under Actions in the top right and attach the policy you just made. Then in the same Actions menu select "attach thing" and attach your raspberry pi thing. 
   
 ### AWS SNS
@@ -46,7 +48,7 @@ If the person was succesfully recognised, an email with the details of that logi
   4) Under the same Action menu select "Subscribe to topic". For protocol select Email and enter your email address under Endpoint.
   5) An confirmation email will be sent to that email address. Click the link in the email to confirm the subscription.
   6) Return to the AWS IoT core service and select the Rules tab. Create a new rule, put any name you wish.
-  7) Under Message Source section put "*" for Attribute*. For Topic Filter put "FaceReko/success" then click add action and select "Send a message as an SNS push notification"
+  7) Under Message Source section put " <nowiki>*</nowiki>" for Attribute. For Topic Filter put "FaceReko/success" then click add action and select "Send a message as an SNS push notification"
   8) In the next page set the SNS target to the topic you made earlier, message format leave as raw.
   9) Click "Create a new role" and enter a role name you wish. Click Update Role then Add Action.
   10) Lastly, click Create rule to complete the process.
