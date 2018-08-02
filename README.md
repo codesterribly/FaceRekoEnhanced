@@ -67,6 +67,7 @@ If the person was succesfully recognised, an email with the details of that logi
 		```
 		(Username, varchar(30))
 		(Password, varchar(30))
+		(cardUID, varchar(11))
 		```
   
 ##  Install:
