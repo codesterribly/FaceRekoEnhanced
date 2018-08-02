@@ -1,12 +1,14 @@
 # FaceRekoEnhanced
-School IoT project. Simple Raspberry Pi face recognition security system for something like a door.
-This project leverages Amazon's Rekognition service and was created for a Raspberry Pi with default account pi (adjust *install.sh* if different), a local mysql database and runs a simple WebApp.
+School IoT project. Simple Raspberry Pi face recognition security system for a door.
+This project leverages Amazon's Rekognition service, AWS SNS service and was created for a Raspberry Pi with default account pi (adjust *install.sh* if different), a local mysql database and runs a simple WebApp.
 
 The WebApp supports a login system with accounts in a MySQL DB. The FaceReko system can be turned ON or OFF from the WebApp along with viewing of access history with images.
 
-FaceReko is currently built with being a door security system in mind. Tapping of an RFID card triggers facial recognition with a buzzer giving audio cues and LEDs representing access allowed or denied.
+Tapping of an RFID card triggers facial recognition with a buzzer giving audio cues and LEDs representing access allowed or denied.
 
 When activated, the system beeps when a card is tapped. If the card is recognised, the camera will begin facial recognition with AWS Rekognition. If the person is recognised, a long beep is presented and the LEDs turns from Red to Green for 10 seconds, signifying access. Else the buzzer will sound 3 times if the person is not recognised and the red LED remains lit.
+
+If the person was succesfully recognised, an email with the details of that login will be sent to a designated email address by AWS SNS push notification service.
 
 ## Hardware requirements:
 - Raspberry Pi (Duh)
@@ -19,9 +21,8 @@ When activated, the system beeps when a card is tapped. If the card is recognise
 
 ## Things to note: 
 1. Default Pi account is used in *install.sh*, change accordingly if needed.
-2. RFID card ID is hardcoded in *rfid.py* under variable `hid`, change accordingly. *check_card.py* can be used to find your card ID.
-3. MySQL login info in the codes has been hardcoded to my throwaway db, change/ setup accordingly.
-4. There is a `collection` variable in *FaceReko.py* which needs to be changed to whatever collection name you set to later in install.
+2. MySQL login info in the codes has been hardcoded to my throwaway db, change/ setup accordingly.
+3. There is a `collection` variable in *FaceReko.py* which needs to be changed to whatever collection name you set to later in install.
 
 ## Pre-requisite setups:
   
@@ -37,6 +38,18 @@ When activated, the system beeps when a card is tapped. If the card is recognise
   4) Click the activate button to activate the certificates.
   5) In the top right corner click "Attach a policy" then "Create new policy". Enter any name you want, enter "*" for Resource ARN* and check Allow under effect. Then complete the policy windows.
   6) In the main AWS IoT core nav bar select "Security Certificates" tab. Select the checkbox of the certificate you made earlier and select "attach policy" under Actions in the top right and attach the policy you just made. Then in the same Actions menu select "attach thing" and attach your raspberry pi thing. 
+  
+### AWS SNS
+  1) Go to AWS SNS service. Then the topics tab under SNS and click "create new topic". Enter any name of your choice for Topic name and Display name.
+  2) Note down the ARN address.
+  3) Select the checkbox of the topic you just made and click "Edit topic policy" under Actions to allow everyone for both options.
+  4) Under the same Action menu select "Subscribe to topic". For protocol select Email and enter your email address under Endpoint.
+  5) An confirmation email will be sent to that email address. Click the link in the email to confirm the subscription.
+  6) Return to the AWS IoT core service and select the Rules tab. Create a new rule, put any name you wish.
+  7) Under Message Source section put "*" for Attribute*. For Topic Filter put "FaceReko/success" then click add action and select "Send a message as an SNS push notification"
+  8) In the next page set the SNS target to the topic you made earlier, message format leave as raw.
+  9) Click "Create a new role" and enter a role name you wish. Click Update Role then Add Action.
+  10) Lastly, click Create rule to complete the process.
 
 ###  Local MySQL DB
   1) Install it, create accounts etc...(If needed) Import given sql file or follow steps 2 - 4 to create database and tables.
@@ -74,6 +87,9 @@ Run `python take_selfie.py` to take a photo of you or the person you want recogn
 
 Run `python add_image.py -i 'selfie.jpg' -c 'home' -l 'Name'` (Replace 'home' with your collection name from earlier and 'Name' with the name of the person in *selfie.jpg*.
 
+### Additional AWS setup
+In the root FaceReko folder run `aws iam create-role --role-name FaceReko --assume-role-policy-document file://iot-role-trust.json`
+
 ### Edit variables
 In *FaceReko.py* and *server.py* change MySQL connection info if needed.
 
@@ -86,16 +102,10 @@ Simply `cd` into the FaceReko folder and run `python server.py`
 
 The webapp will be running on port 5000 (raspberryPi_IP:5000)
 
-Once you enter the address into your browser URL bar, you will be presented with the login screen. Hit the Create Account button and create an account, regex is in place so only alpha numeric upto 30 characters are allowed. Once done proceed to login.
+Once you enter the address into your browser URL bar, you will be presented with the login screen. Hit the Create Account button and create an account, regex is in place so only alpha numeric upto 30 characters are allowed. Place your RFID card on the reader before clicking submit. Once done proceed to login.
 
-After login you are presented with the home screen. The access log chart displays up to the last 10 people who were recognised by the facial recognition system. The chart shows name of the person recognised, time they gained access as well as similarity and confidence of that recognition and lastly there is the option to view the taken image of the person during that facial recognition request.
+After login you are presented with the home screen. Below the welcome message is the control panel which displays the current status of the security system (Active or Offline) and controls to activate or deactivate the security system.
 
-Below the chart is the control panel which displays the current status of the security system (Active or Offline) and controls to activate or deactivate the security system.
+Below the control panel is the access log chart displays the history of people who were recognised by the facial recognition system. The chart shows name of the person recognised, time they gained access as well as similarity and confidence of that recognition and lastly there is the option to view the taken image of the person during that facial recognition request.
 
 So to use the security system, simply activate it, scan your RFID card (buzzer beeps on card scan), face the camera. If recognised as an authorized person you will hear a long beep and the LEDs will change from red to green. Otherwise you will hear 3 beeps to signify access denied, unrecognised person.
-	
-## TODO:
-- Secure passwords with hashing
-- Merge AWS Rekognition setup into front-end
-- Save RFID card uid to DB
-	- RFID card registration front-end
