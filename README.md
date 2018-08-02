@@ -110,3 +110,5 @@ After login you are presented with the home screen. Below the welcome message is
 Below the control panel is the access log chart displays the history of people who were recognised by the facial recognition system. The chart shows name of the person recognised, time they gained access as well as similarity and confidence of that recognition and lastly there is the option to view the taken image of the person during that facial recognition request.
 
 So to use the security system, simply activate it, scan your RFID card (buzzer beeps on card scan), face the camera. If recognised as an authorized person you will hear a long beep and the LEDs will change from red to green. Otherwise you will hear 3 beeps to signify access denied, unrecognised person.
+
+If the person was succesfully recognised, an email with the details of that login will be sent to a designated email address by AWS SNS push notification service.
