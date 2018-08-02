@@ -13,7 +13,7 @@ When activated, the system beeps when a card is tapped. If the card is recognise
 If the person was succesfully recognised, an email with the details of that login will be sent to a designated email address by AWS SNS push notification service.
 
 ## Hardware requirements:
-- Raspberry Pi (Duh)
+- Raspberry Pi
 - PiCamera
 - MFRC522 RFID reader and RFID card
 - Red & Green LED diodes
