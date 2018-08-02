@@ -6,6 +6,7 @@ apt-get update && apt-get -y upgrade
 apt-get install -y build-essential python-setuptools python-pip awscli
 
 pip install boto3 watchdog simplejson PiCamera
+pip install AWSIoTPythonSDK
 rm -rf ~/.cache/pip
 
 echo 'Configuring AWS...'
