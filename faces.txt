@@ -1,3 +1,0 @@
-Date | Label | Collection | FaceId | ImageId
-2018-06-26 08:05:46 | CheeXian | home | 3650884f-1f2e-455f-8954-3abc9d87f0e1 | 8ab8a5f1-6310-5d0b-8a15-c9cb1b72440a
-2018-06-26 08:48:29 | Hello | home | 73c8a37c-96aa-44bb-a84b-fde65db25b35 | 172a1d95-a2f4-5a57-8a5b-7dea6c05afd0
