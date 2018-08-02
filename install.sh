@@ -7,6 +7,7 @@ apt-get install -y build-essential python-setuptools python-pip awscli
 
 pip install boto3 watchdog simplejson PiCamera
 pip install AWSIoTPythonSDK
+pip install paho-mqtt
 rm -rf ~/.cache/pip
 
 echo 'Configuring AWS...'
