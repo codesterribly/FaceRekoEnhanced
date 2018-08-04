@@ -70,11 +70,16 @@ def check():
 def chart():
 	u, pw,h,db = 'root', 'dmitiot', 'localhost', 'FaceReko'
 	data = []
+	data2 = []
 	con = mysql.connector.connect(user=u,password=pw,host=h,database=db)
+	con2 = mysql.connector.connect(user=u,password=pw,host=h,database=db)
 	print("Database successfully connected")
 	cur = con.cursor()
+	cur2 = con2.cursor()
 	query = "SELECT Time, Name, Similarity, Confidence, Image FROM AccessLog ORDER BY Time"
+	query2 = "SELECT Name,COUNT(*) as count FROM AccessLog GROUP BY Name ORDER BY count DESC"
 	cur.execute(query)
+	cur2.execute(query2)
 	for (Time, Name, Similarity, Confidence, Image) in cur:
 		d = []
 		d.append("{:%d-%m-%Y %H:%M:%S}".format(Time))
@@ -85,11 +90,19 @@ def chart():
 		data.append(d)    
 	#print(data)
 	data_reversed = data[::-1]
+
+	for (Name, count) in cur2:
+		e = []
+		e.append(Name)
+		e.append(int(count))
+		print(Name, count)
+		data2.append(e)
+	print(data2)
 	
 	stat = session.get('status', 'Offline')
 	templateData ={'status': stat}
 
-	return render_template('index.html', data=data_reversed, **templateData)
+	return render_template('index.html', data=data_reversed, data2=data2, **templateData)
 	#print('Rendered')
 
 @app.route("/activate/")
