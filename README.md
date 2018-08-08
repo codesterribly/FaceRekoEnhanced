@@ -96,6 +96,8 @@ In the root FaceReko folder run `aws iam create-role --role-name FaceReko --assu
 ### Edit variables
 In *FaceReko.py* and *server.py* change MySQL connection info if needed.
 
+In *FaceReko.py* change the host, rootCAPath, certificatePath and privateKeyPath to your own URL and files from earlier.
+
 Lastly for this section, edit *FaceReko.py* and look for the `collection` variable. Change this to whatever you named your collection earlier.
 
 ## Usage:
