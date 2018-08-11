@@ -107,10 +107,16 @@ def main():
 			return True
 			
 		else:
-			print 'No face matches detected...' 
+			print 'No face matches detected...'
+			msg = "Unauthorized access attempt!"
+			my_rpi.publish("FaceReko/failure", msg, 1)
+			
 
 	else :
 		print "No faces detected..."
+		msg = "Unauthorized access attempt!"
+		my_rpi.publish("FaceReko/failure", msg, 1)
+ 
         
 if __name__ == '__main__':
     main()
