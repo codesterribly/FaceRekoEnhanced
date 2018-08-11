@@ -10,15 +10,16 @@ Tapping of an RFID card triggers facial recognition with a buzzer giving audio c
 
 When activated, the system beeps when a card is tapped. If the card is recognised, the camera will begin facial recognition with AWS Rekognition. If the person is recognised, a long beep is presented and the LEDs turns from Red to Green for 10 seconds, signifying access. Else the buzzer will sound 3 times if the person is not recognised and the red LED remains lit.
 
-If the person was succesfully recognised, an email with the details of that login will be sent to a designated email address by AWS SNS push notification service.
+If the person was succesfully recognised, an email with the details of that login will be sent to a designated email address by AWS SNS push notification service. A second PI can also act as an alarm in another room when an unauthorised attempt is made.
 
 ## Hardware requirements:
-- Raspberry Pi
+- Raspberry Pi (Optional: 2nd Pi to act as an alarm)
 - PiCamera
 - MFRC522 RFID reader and RFID card
 - Red & Green LED diodes
 - Buzzer
 
+<nowiki>*</nowiki>2nd Pi setup only requires the buzzer to be connected.
 ![Frizing diagram](https://github.com/yxkillz/FaceRekoEnhanced/blob/master/FaceReko%20Friz_v2.png)
 
 ## Things to note: 
@@ -48,7 +49,7 @@ If the person was succesfully recognised, an email with the details of that logi
   4) Under the same Action menu select "Subscribe to topic". For protocol select Email and enter your email address under Endpoint.
   5) An confirmation email will be sent to that email address. Click the link in the email to confirm the subscription.
   6) Return to the AWS IoT core service and select the Rules tab. Create a new rule, put any name you wish.
-  7) Under Message Source section put " <nowiki>*</nowiki>" for Attribute. For Topic Filter put "FaceReko/success" then click add action and select "Send a message as an SNS push notification"
+  7) Under Message Source section put "<nowiki>*</nowiki>" for Attribute. For Topic Filter put "FaceReko/success" then click add action and select "Send a message as an SNS push notification"
   8) In the next page set the SNS target to the topic you made earlier, message format leave as raw.
   9) Click "Create a new role" and enter a role name you wish. Click Update Role then Add Action.
   10) Lastly, click Create rule to complete the process.
@@ -93,6 +94,9 @@ Run `python add_image.py -i 'selfie.jpg' -c 'home' -l 'Name'` (Replace 'home' wi
 ### Additional AWS setup
 In the root FaceReko folder run `aws iam create-role --role-name FaceReko --assume-role-policy-document file://iot-role-trust.json`
 
+### Optional: 2nd Raspberry Pi
+The 2nd Pi which acts as an remote alarm only requires the 4 cert and key files from earlier along with the *aws_sub.py* file from the repo. Either run the install script, place the 4 cert & key files and run just *aws_sub.py* OR place the cert & key files along with the *aws_sub.py* file and manually install the prerequisites in the *install.sh* file on the second Pi.
+
 ### Edit variables
 In *FaceReko.py* and *server.py* change MySQL connection info if needed.
 
@@ -113,4 +117,4 @@ Below the control panel is the access log chart displays the history of people w
 
 So to use the security system, simply activate it, scan your RFID card (buzzer beeps on card scan), face the camera. If recognised as an authorized person you will hear a long beep and the LEDs will change from red to green. Otherwise you will hear 3 beeps to signify access denied, unrecognised person.
 
-If the person was succesfully recognised, an email with the details of that login will be sent to a designated email address by AWS SNS push notification service.
+If the person was succesfully recognised, an email with the details of that login will be sent to a designated email address by AWS SNS push notification service. If an unauthroised attempt was made and a second Pi was setup as a remote alarm, the buzzer on the second Pi will trigger.
